@@ -1,0 +1,32 @@
+name: Remove README Files
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  remove-readmes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove README files
+        run: |
+          find . -type f -name "README.md" ! -path "./README.md" -delete
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          git diff --staged --quiet || git commit -m "Auto remove README files"
+
+      - name: Push changes
+        run: git push
